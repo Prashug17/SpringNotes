@@ -1,0 +1,23 @@
+You are responsible for performing CRUD operation using
+Spring-JDBC. 
+Instructions:
+1. Create Table Products which will have following columns
+	a. product_id
+	b. product_name
+	c. product_price
+	d. product_desc
+2. Create Bean class Product to represent Product table
+3. Output of this assignment should be as follows:
+
+	-----------Admin Operation-----
+	1. Add Product
+	2. Delete Product
+	3. Update Product Price
+	4. Update Product Name
+	5. Update Product Description
+	6. Display Product by ID
+	7. Display All Products
+	0. Exit
+	-------------------------------
+All above options should be functional.
+

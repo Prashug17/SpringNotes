@@ -1,0 +1,198 @@
+POM.xml
+--------------------
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+----------------------------------------------------------------------------------------
+Student.java
+-------------------------
+package com.model;
+
+public class Student {
+	private int id;
+	private String name;
+	private String address;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public Student() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public Student(int id, String name, String address) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.address = address;
+	}
+	@Override
+	public String toString() {
+		return "Student [id=" + id + ", name=" + name + ", address=" + address + "]";
+	}
+	
+
+}
+---------------------------------------------------------------------------------------------------------------------
+StudentController.java
+--------------------------
+package com.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.model.Student;
+import com.service.StudentService;
+
+//@Controller
+@RestController 
+// RestController = Controller+ResponseBody
+public class StudentController {
+	
+//	@RequestMapping(value = "/test" , method = RequestMethod.GET)
+	@GetMapping("/test")
+	public String testHandler() {
+		return "Testing successfully..";
+	}
+	
+	@Autowired
+	StudentService studService;
+	@GetMapping("/students")
+	public List<Student> getStudents(){
+		return studService.getStudents();
+	}
+	
+	@GetMapping("/student/{id}")
+	public Student getStudent(@PathVariable("id") int id) {
+		return studService.getStudent(id);
+	}
+	
+	@PostMapping("/student")
+	public Student addStudent(@RequestBody Student student) {
+		return studService.addStudent(student);
+	}
+	
+	@DeleteMapping("/student/{id}")
+	public void deleteStudent(@PathVariable("id") int id) {
+		studService.deleteStudent(id);
+	}
+	
+	@PutMapping("/student/{sid}")
+	public void updateStudent(@RequestBody Student student, @PathVariable("sid") int id) {
+		this.studService.updateStudent(student, id);
+	}
+	
+
+}
+
+--------------------------------------------------------------------------------------------------------------------
+StudentService.java
+---------------------------------------------------------------------
+package com.service;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.model.Student;
+
+@Service
+public class StudentService {
+	
+	private static List<Student> list=new ArrayList<Student>();
+	static {
+		list.add(new Student(1,"Bhushan","Mumbai"));
+		list.add(new Student(2,"Rahul","Pune"));
+	}
+	
+	public List<Student> getStudents(){
+		return list;
+	}
+	
+	public Student getStudent(int id) {
+		Student s = new Student();
+		List<Student> slist=getStudents();
+		for (Iterator iterator = slist.iterator(); iterator.hasNext();) {
+			Student student = (Student) iterator.next();
+			if(student.getId()==id) 
+				s =student;		
+			
+		}
+		return s;
+		
+	}
+	
+	public Student addStudent(Student student) {
+		Student stud = new Student();
+		stud.setId(student.getId());
+		stud.setName(student.getName());
+		stud.setAddress(student.getAddress());
+		list.add(student);
+		return stud;
+		
+	}
+	
+	
+	public void deleteStudent(int stid) {
+		for (Iterator<Student> iterator = list.iterator(); iterator.hasNext();) {
+			Student student = (Student) iterator.next();
+			if(student.getId()==stid) {
+				list.remove(student);
+			}
+			
+		}
+	}
+	
+	public void updateStudent(Student student, int id) {
+		for (Iterator<Student> iterator = list.iterator(); iterator.hasNext();) {
+			Student st1 = (Student) iterator.next();
+			if(st1.getId()==id) {
+				st1.setName(student.getName());
+				st1.setAddress(student.getAddress());
+			}
+			
+		}
+	}
+
+}
+------------------------------------------------------------------------------------------------------------------------------
